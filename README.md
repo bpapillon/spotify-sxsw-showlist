@@ -11,9 +11,10 @@ Use your Spotify playlists to find official and unofficial shows at SXSW. Update
 
 # Yearly Maintenance
 
-Every year, the SXSW_YEAR (current year) and SXSW_START_DAY (integer date in March of the first day, Tuesday, of SXSW) will need to be updated. Changes in the designs of schedule.sxsw.com or showlistaustin.com will also likely result a need to update the scraper code that pulls show data from those sites.
+Every year, the SXSW_YEAR (current year) and SXSW_START_DAY (integer date in March of the first day, Tuesday, of SXSW) will need to be updated. Any changes to the designs of schedule.sxsw.com or showlistaustin.com would also necessitate changes to the scraper code that pulls show data from those sites.
 
 # Todo
 
 1. Cache results from scrapers
-
+2. Implement the unofficial scraper (it's already written for the front-end, but needs to be ported over to the node side)
+3. Layout/css
