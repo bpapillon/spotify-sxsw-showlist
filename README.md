@@ -16,6 +16,6 @@ Every year, the SXSW_YEAR (current year) and SXSW_START_DAY (integer date in Mar
 
 # Todo
 
-1. Cache results from scrapers
-2. Layout/css
-3. Print styles
+1. Store results in cache
+2. Print styles
+3. General UI/styles

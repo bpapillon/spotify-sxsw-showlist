@@ -30,9 +30,9 @@
       document.getElementById('filter-shows').addEventListener('click', function(){
         that.loadAndRenderShows();
       }, false);
-      document.getElementById('obtain-new-token').addEventListener('click', function(){
-        that.refreshToken();
-      }, false);
+      // document.getElementById('obtain-new-token').addEventListener('click', function(){
+      //   that.refreshToken();
+      // }, false);
       document.getElementById('clear-selections').addEventListener('click', function(){
         that.clearSelections();
       }, false);
@@ -188,18 +188,18 @@
       });
     },
 
-    refreshToken: function(callback){
-      typeof callback !== 'function' && (callback = noop);
-      $.ajax({
-        url: '/refresh_token',
-        data: {
-          'refresh_token': this.refresh_token
-        }
-      }).done(function(data) {
-        this.access_token = data.access_token;
-        callback(data);
-      });
-    },
+    // refreshToken: function(callback){
+    //   typeof callback !== 'function' && (callback = noop);
+    //   $.ajax({
+    //     url: '/refresh_token',
+    //     data: {
+    //       'refresh_token': this.refresh_token
+    //     }
+    //   }).done(function(data) {
+    //     this.access_token = data.access_token;
+    //     callback(data);
+    //   });
+    // },
 
     renderArtists: function(){
       var that = this;
@@ -231,18 +231,20 @@
           that = this,
           playlists = this.playlists.map(function(playlist){
             playlist.selected = that.selected_playlists.indexOf(playlist.id) > -1;
+            playlist.selected_class = playlist.selected ? 'selected' : '';
             return playlist;
           });
       document.getElementById('user-playlists').innerHTML = templateFn({
         'playlists': this.playlists
       });
       $('#user-playlists').show();
-      $('#user-playlists li').click(function(ev){
+      $('#user-playlists .playlist').click(function(ev){
         var url = $(this).data('url'),
             playlist_id = $(this).data('id');
         that.collectArtists(url, function(){
           that.renderArtists();
           that.selected_playlists.push(playlist_id);
+          that.renderPlaylists();
         });
       });
     },

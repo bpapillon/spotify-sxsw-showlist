@@ -1,15 +1,55 @@
 #login, #loggedin, #user-playlists, #loading-img {
-    display: none;
+  display: none;
+}
+
+div#login {
+	width: 100%;
+	text-align: center;
+}
+
+#login-btn {
+	color: #fff;
+	background-color: #2ebd59;
+}
+
+div#loggedin {
+	padding: 40px 0;
 }
 
 .text-overflow {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 500px;
+}
+
+a {
+	cursor: pointer;
 }
 
 li {
-    list-style: none;
-    cursor: pointer;
+  list-style: none;
+}
+
+.playlist {
+	clear: none;
+	cursor: pointer;
+	height: 275px;
+}
+
+.playlist .thumbnail {
+	height: 260px;
+	text-align: center;
+}
+
+.playlist .thumbnail  {
+	background-color: #fff;
+}
+.playlist .thumbnail.selected  {
+	background-color: #2ebd59;
+}
+
+img#github-logo {
+	width: 16px;
+	height: 16px;
 }
