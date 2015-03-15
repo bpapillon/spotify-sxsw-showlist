@@ -248,11 +248,11 @@
     },
 
     renderShows: function(show_source, show_day){
-      show_source = show_source.toLowerCase();
-      if (show_source === 'official') {
-        return renderOfficialShows(show_day);
+      show_source = show_source.toUpperCase();
+      if (show_source === Showlists.OFFICIAL) {
+        return this.renderOfficialShows(show_day);
       } else {
-        return renderUnofficialShows(show_day);
+        return this.renderUnofficialShows(show_day);
       }
     },
 

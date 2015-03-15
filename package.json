@@ -1,9 +1,19 @@
 {
   "author": "bpapillon",
-  "name": "spotify-showlist",
+  "name": "spotify-sxsw-showlist",
   "description": "Use your Spotify playlists to find shows at SXSW",
   "version": "0.0.1",
   "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bpapillon/spotify-sxsw-showlist"
+  },
   "dependencies": {
     "cheerio": "^0.18.0",
     "cookie-parser": "1.3.2",
