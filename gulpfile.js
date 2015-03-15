@@ -2,16 +2,19 @@
 
 var gulp = require('gulp'),
 		$ = require('gulp-load-plugins')(),
+		minifyCss = require('gulp-minify-css'),
 		paths = {
 			css: 'public/css/*.css',
+			css_dist: 'dict/*.css',
 			dist: 'public/dist/',
 			js: 'public/js/*.js'
 		};
 
 gulp.task('css', function () {
-  // return gulp.src(paths.css)
-  //   .pipe(({keepBreaks:true}))
-  //   .pipe(gulp.dest('./dist/'))
+  return gulp.src(paths.css)
+    .pipe(minifyCss())
+    .pipe($.concat('showlist.min.css'))
+    .pipe(gulp.dest(paths.dist));
 });
 
 gulp.task('js', function () {
@@ -28,11 +31,10 @@ gulp.task('jshint', function () {
 });
 
 gulp.task('watch', function() {
-	// gulp.watch(paths.css, ['css'])
-	gulp.watch(paths.js, ['js'])
+	gulp.watch(paths.css, ['css'])
+	gulp.watch(paths.js, ['jshint', 'js'])
 });
 
-gulp.task('build', ['js'/*, 'css'*/]);
+gulp.task('build', ['js', 'css']);
 
 gulp.task('default', ['build', 'watch']);
-

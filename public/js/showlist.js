@@ -131,7 +131,7 @@
             if (response.error) {
               alert(response.error);
             } else {
-              that.shows[Showlists.OFFICIAL][day] = response.shows;fn()
+              that.shows[Showlists.OFFICIAL][day] = response.shows;
             }
             fn();
           }

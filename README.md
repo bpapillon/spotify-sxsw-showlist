@@ -5,7 +5,7 @@ Use your Spotify playlists to find official and unofficial shows at SXSW. Update
 # Installation and Setup
 
 1. [Register a new Spotify application](https://developer.spotify.com/my-applications/)
-2. Create a credentials.json file in settings/, using settings/credentials.example.json as a template, containing the client ID and secret from your new Spotify app.
+2. Using settings/credentials.example.json as a template, store your newly-created client ID, client secret, and redirect URI in settings/credentials.json.
 3. Run `npm install` to install node dependencies
 4. Start the node server via `node app.js`
 
