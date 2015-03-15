@@ -3,11 +3,12 @@
  * https://github.com/spotify/web-api-auth-examples
  */
 
-var express = require('express'),
+var _ = require('underscore'),
+    express = require('express'),
     request = require('request'),
     querystring = require('querystring'),
     cookieParser = require('cookie-parser'),
-    scraper = require('./lib/scrapers')
+    scraper = require('./lib/scraper')
     CONFIG = require('./settings/config.json'),
     CREDENTIALS = require('./settings/credentials.json');
 
@@ -113,26 +114,18 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-app.get('/shows/official/*', function(req, res) {
-  var urlParts = req.url.split('/'),
-      day = urlParts[urlParts.length - 1];
-  if (CONFIG.SXSW_DAYS.indexOf(day) === -1) {
+app.get('/shows/*/*', function(req, res) {
+  var urlParts = _.compact(req.url.split('/')),
+      source = urlParts[1],
+      day = urlParts[2];
+  if (typeof scraper[source] !== 'function') {
     return res.send({
       'success': false,
-      'error': 'Invalid show day: ' + day,
+      'error': 'Invaid show source: ' + source,
       'shows': []
     });
   }
-  var idx = CONFIG.SXSW_DAYS.indexOf(day),
-      url = 'http://schedule.sxsw.com/?conference=music&day=' + (idx + CONFIG.SXSW_START_DAY);
-  scraper.official(url, res);
-});
-
-app.get('/shows/unofficial/*', function(req, res) {
-  var urlParts = req.url.split('/'),
-      day = urlParts[urlParts.length - 1],
-      url = null;
-  scraper.unofficial(url, res);
+  scraper[source](day, res);
 });
 
 console.log('Listening on 8888');

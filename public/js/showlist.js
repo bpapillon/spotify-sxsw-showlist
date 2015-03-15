@@ -28,7 +28,7 @@
     bindEvents: function(){
       var that = this;
       document.getElementById('filter-shows').addEventListener('click', function(){
-        that.renderShows();
+        that.loadAndRenderShows();
       }, false);
       document.getElementById('obtain-new-token').addEventListener('click', function(){
         that.refreshToken();
@@ -115,62 +115,16 @@
         this.shows[showlist][day].length > 0;
     },
 
-    loadDayOfficial: function(day, fn) {
-      var that = this;
-      typeof fn !== 'function' && (fn = noop);
-      if (!this.shows[Showlists.OFFICIAL]) {
-        this.shows[Showlists.OFFICIAL] = {};
-      }
-      if (this.isLoaded(Showlists.OFFICIAL, day)) {
-        return fn();
-      }
-      this.shows[Showlists.OFFICIAL][day] = [];
-      $.ajax({
-          url: '/shows/official/' + day,
-          success: function(response) {
-            if (response.error) {
-              alert(response.error);
-            } else {
-              that.shows[Showlists.OFFICIAL][day] = response.shows;
-            }
-            fn();
-          }
-      });
-    },
-
-    loadDayUnofficial: function(day, fn) {
-      var day_parts = ['day', 'night'];
-      if (!this.shows[Showlists.UNOFFICIAL]) {
-        this.shows[Showlists.UNOFFICIAL] = {};
-      }
-      if (this.isLoaded(Showlists.UNOFFICIAL, day)) {
-        return fn();
-      }
-      this.shows[Showlists.UNOFFICIAL][day] = [];
-      this.unofficial_pages[day] = [];
-      for (var i = 0; i < day_parts.length; i++) {
-        this.loadPageUnofficial(day, day_parts[i], fn);
-      }
-    },
-
-    loadPageUnofficial: function(day, day_part, fn) {
-      var that = this, shows_html, shows,
-          url = 'http://showlistaustin.com/sxsw/' + this.sxsw_year + '/' + day.substr(0,3) + day_part + '.shtml',
-          div_id = 'scraper-unofficial-' + day.substr(0,3) + day_part;
-      fn = fn || noop;
-      $('body').append('<div id="' + div_id + '" style="display: none;" />');
-      $('#' + div_id).load(url + ' .printcontent', function(){
-        shows_html = $('#' + div_id)[0].getElementsByTagName('ul')[0].innerHTML;
-        shows = shows_html.split(/<hr style="color:#cccccc;"\s*\/*>/);
-        for (var i = 0; i < shows.length; i++) {
-          if (!shows[i]) continue;
-          that.shows[Showlists.UNOFFICIAL][day].push(shows[i]);
-        }
-        $('#' + div_id).remove();
-        that.unofficial_pages[day].push(url);
-        if (that.unofficial_pages[day] && that.unofficial_pages[day].length === 2) {
-          fn();
-        }
+    loadAndRenderShows: function() {
+      var that = this,
+          show_day = $('#show-day').val().toLowerCase(),
+          show_source = $('#show-source').val().toLowerCase();
+      $('#loading-img').show();
+      $("#filter-shows").prop("disabled", true);
+      return this.loadShows(show_source, show_day, function(){
+        that.renderShows(show_source, show_day);
+        $('#loading-img').hide();
+        $("#filter-shows").prop("disabled", false);
       });
     },
 
@@ -207,6 +161,30 @@
       this.playlists = [];
       loadPlaylists(playlist_url, function(){
         that.renderPlaylists();
+      });
+    },
+
+    loadShows: function(show_source, day, fn) {
+      var that = this;
+      typeof fn !== 'function' && (fn = noop);
+      show_source = show_source.toUpperCase();
+      if (!this.shows[Showlists[show_source]]) {
+        this.shows[Showlists[show_source]] = {};
+      }
+      if (this.isLoaded(Showlists[show_source], day)) {
+        return fn();
+      }
+      this.shows[Showlists[show_source]][day] = [];
+      $.ajax({
+          url: '/shows/' + show_source.toLowerCase() + '/' + day,
+          success: function(response) {
+            if (response.error) {
+              alert(response.error);
+            } else {
+              that.shows[Showlists[show_source]][day] = response.shows;
+            }
+            fn();
+          }
       });
     },
 
@@ -269,24 +247,12 @@
       });
     },
 
-    renderShows: function() {
-      var that = this,
-          show_source = $('#show-source').val(),
-          show_day = $('#show-day').val();
-      $('#loading-img').show();
-      $("#filter-shows").prop("disabled", true);
+    renderShows: function(show_source, show_day){
+      show_source = show_source.toLowerCase();
       if (show_source === 'official') {
-        that.loadDayOfficial(show_day, function(){
-          that.renderOfficialShows(show_day);
-          $('#loading-img').hide();
-          $("#filter-shows").prop("disabled", false);
-        });
+        return renderOfficialShows(show_day);
       } else {
-        that.loadDayUnofficial(show_day, function(){
-          that.renderUnofficialShows(show_day);
-          $('#loading-img').hide();
-          $("#filter-shows").prop("disabled", false);
-        });
+        return renderUnofficialShows(show_day);
       }
     },
 
