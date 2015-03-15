@@ -1,0 +1,77 @@
+<!doctype html>
+
+<html>
+
+  <head>
+    <title>Spotify Showlist</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div id="login">
+        <h1>Ready to find some shows?</h1>
+        <a href="/login" class="btn btn-primary">Log in with Spotify</a>
+      </div>
+      <div id="loggedin">
+        <div id="user-profile"></div>
+        <div id="user-playlists"></div>
+        <div id="artists"></div>
+        <div>
+          <h1>Shows:</h1>
+          <select id="show-source">
+            <option value="official">Official Shows</option>
+            <option value="unofficial">Unofficial Shows</option>
+          </select>
+          <select id="show-day">
+            <option value="tuesday">Tuesday</option>
+            <option value="wednesday">Wednesday</option>
+            <option value="thursday">Thursday</option>
+            <option value="friday">Friday</option>
+            <option value="saturday">Saturday</option>
+            <option value="sunday">Sunday</option>
+          </select>
+          <button class="btn btn-default" id="filter-shows">Filter Shows</button>
+          <img id="loading-img" src="img/spinner.gif" />
+        </div>
+        <div id="shows"></div>
+      </div>
+    </div>
+
+    <script id="artists-template" type="text/x-handlebars-template">
+      <h1>Artists:</h1>
+      <ul>
+      {{#each artists}}<li>{{name}}</li>{{/each}}
+      </ul>
+    </script>
+
+    <script id="user-playlists-template" type="text/x-handlebars-template">
+      <h1>Playlists:</h1>
+      <ul>
+      {{#each playlists}}<li data-url="{{href}}" data-id="{{id}}"><img class="media-object" width="150" src="{{images.0.url}}" />{{name}}</li>{{/each}}
+      </ul>
+    </script>
+
+    <script id="user-profile-template" type="text/x-handlebars-template">
+      <div class="media">
+        <div class="pull-left">
+          <img class="media-object" width="150" src="{{images.0.url}}" />
+        </div>
+        <div class="pull-right">
+          <button class="btn btn-default" id="obtain-new-token">Refresh auth token</button>
+          <button class="btn btn-default" id="clear-selections">Clear selections</button>
+        </div>
+      </div>
+    </script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/js/jquery.highlight.js"></script>
+    <script src="/js/showlist.js"></script>
+
+  </body>
+
+</html>
