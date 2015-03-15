@@ -74,8 +74,9 @@
     filterOfficialShows: function(day) {
       var that = this,
           filtered = {},
-          artist_names = this.getArtistNames();
-      $.each(this.shows[Showlists.OFFICIAL][day], function(i, show) {
+          artist_names = this.getArtistNames(),
+          shows = this.shows[Showlists.OFFICIAL][day];
+      $.each(shows, function(i, show) {
         if (artist_names.indexOf(show.artist) > -1) {
           if (typeof filtered[show.artist] === 'undefined') {
             filtered[show.artist] = [];
@@ -237,12 +238,12 @@
           timeLocationHelper = function(d){
             return [d.time, d.location].join(" at ");
           };
-      $('#output').html('');
+      $('#shows').html('');
       $.each(this.filterOfficialShows(day), function(artist_name, artist_shows){
         var output_str = "<p><a href='" + that.sxswSearchUrl(artist_name) +
           "'>" + artist_name + "</a><br />" +
           artist_shows.map(timeLocationHelper).join("<br />") + "</p><br />";
-        $('#output').append(output_str);
+        $('#shows').append(output_str);
       });
     },
 
@@ -292,16 +293,16 @@
     renderUnofficialShows: function(day) {
       var artist_names = this.getArtistNames(),
           artist_pattern = this.getArtistRegexp(artist_names);
-      $('#output').html('');
+      $('#shows').html('');
       if (artist_names.length === 0) {
         return;
       }
       $.each(this.shows[Showlists.UNOFFICIAL][day], function(i, show){
         if (show.slice(show.indexOf('<li>'),show.length-1).search(artist_pattern) > -1) {
-          $('#output').append('<br />' + show);
+          $('#shows').append('<br />' + show);
         }
       });
-      $('#output').highlight(artist_names, { wordsOnly: true });
+      $('#shows').highlight(artist_names, { wordsOnly: true });
     },
 
     run: function(){
