@@ -1,5 +1,5 @@
 /**
- * This is adapted from the Spotify Web API tutorial code
+ * Some of this is adapted from the Spotify Web API tutorial code
  * https://github.com/spotify/web-api-auth-examples
  */
 
@@ -7,6 +7,7 @@ var express = require('express'),
     request = require('request'),
     querystring = require('querystring'),
     cookieParser = require('cookie-parser'),
+    scraper = require('./lib/scrapers')
     CONFIG = require('./settings/config.json'),
     CREDENTIALS = require('./settings/credentials.json');
 
@@ -31,12 +32,9 @@ app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
 
 app.get('/login', function(req, res) {
-
-  var state = generateRandomString(16);
+  var state = generateRandomString(16),
+      scope = 'user-read-private user-read-email playlist-read-private';
   res.cookie(stateKey, state);
-
-  // your application requests authorization
-  var scope = 'user-read-private user-read-email playlist-read-private';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -48,11 +46,9 @@ app.get('/login', function(req, res) {
 });
 
 app.get('/callback', function(req, res) {
-
   var code = req.query.code || null,
       state = req.query.state || null,
       storedState = req.cookies ? req.cookies[stateKey] : null;
-
   if (state === null || state !== storedState) {
     res.redirect('/#' +
       querystring.stringify({
@@ -72,25 +68,15 @@ app.get('/callback', function(req, res) {
       },
       json: true
     };
-
     request.post(authOptions, function(error, response, body) {
       if (!error && response.statusCode === 200) {
-
         var accessToken = body.access_token,
-            refreshToken = body.refresh_token;
-
-        var options = {
-          url: 'https://api.spotify.com/v1/me',
-          headers: { 'Authorization': 'Bearer ' + accessToken },
-          json: true
-        };
- 
-        // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-          console.log(body);
-        });
-
-        // we can also pass the token to the browser to make requests from there
+            refreshToken = body.refresh_token,
+            options = {
+              url: 'https://api.spotify.com/v1/me',
+              headers: { 'Authorization': 'Bearer ' + accessToken },
+              json: true
+            };
         res.redirect('/#' +
           querystring.stringify({
             access_token: accessToken,
@@ -129,21 +115,24 @@ app.get('/refresh_token', function(req, res) {
 
 app.get('/shows/official/*', function(req, res) {
   var urlParts = req.url.split('/'),
-      showDay = urlParts[urlParts.length - 1];
-  if (CONFIG.SXSW_DAYS.indexOf(showDay) === -1) {
+      day = urlParts[urlParts.length - 1];
+  if (CONFIG.SXSW_DAYS.indexOf(day) === -1) {
     return res.send({
       'success': false,
-      'error': 'Invalid show day ' + showDay
+      'error': 'Invalid show day: ' + day,
+      'shows': []
     });
   }
-  var idx = CONFIG.SXSW_DAYS.indexOf(showDay),
+  var idx = CONFIG.SXSW_DAYS.indexOf(day),
       url = 'http://schedule.sxsw.com/?conference=music&day=' + (idx + CONFIG.SXSW_START_DAY);
-  request.get(url).on('data', function(chunk) {
-    console.log(chunk);
-  });
-  res.send({
-    'success': true
-  })
+  scraper.official(url, res);
+});
+
+app.get('/shows/unofficial/*', function(req, res) {
+  var urlParts = req.url.split('/'),
+      day = urlParts[urlParts.length - 1],
+      url = null;
+  scraper.unofficial(url, res);
 });
 
 console.log('Listening on 8888');

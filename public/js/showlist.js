@@ -1,4 +1,4 @@
-;(function(document, Handlebars, $, _){
+;(function(document, Handlebars, $){
 
   "use strict";
 
@@ -10,7 +10,6 @@
       Showlist = function() {
         this.spotify_id = null;
         this.playlists = [];
-        this.sxsw_year = sxsw_year;
         this.artists = [];
         this.artist_ids = [];
         this.selected_playlists = [];
@@ -78,7 +77,9 @@
           artist_names = this.getArtistNames();
       $.each(this.shows[Showlists.OFFICIAL][day], function(i, show) {
         if (artist_names.indexOf(show.artist) > -1) {
-          if (!filtered[show.artist]) filtered[show.artist] = [];
+          if (typeof filtered[show.artist] === 'undefined') {
+            filtered[show.artist] = [];
+          }
           filtered[show.artist].push(show);
         }
       });
@@ -114,9 +115,7 @@
     },
 
     loadDayOfficial: function(day, fn) {
-      var that = this, artist, location, time, notes, nodes, node,
-          div_id = 'scraper-official-' + day,
-          url = this.officialUrl(day);
+      var that = this;
       typeof fn !== 'function' && (fn = noop);
       if (!this.shows[Showlists.OFFICIAL]) {
         this.shows[Showlists.OFFICIAL] = {};
@@ -125,33 +124,16 @@
         return fn();
       }
       this.shows[Showlists.OFFICIAL][day] = [];
-      if (typeof url === 'undefined') return fn();
-      $('body').append('<div id="' + div_id + '" style="display: none;" />');
-      $('#' + div_id).load(url + ' #main', function(){
-        nodes = $('#' + div_id +' #main .data')[0].childNodes;
-        for (var i = 0; i < nodes.length; i++) {
-          if (typeof nodes[i].id === 'undefined' || nodes[i].id.substr(0, 11) !== 'cell_event_') {
-            continue;
+      $.ajax({
+          url: '/shows/official/' + day,
+          success: function(response) {
+            if (response.error) {
+              alert(response.error);
+            } else {
+              that.shows[Showlists.OFFICIAL][day] = response.shows;fn()
+            }
+            fn();
           }
-          node = $(nodes[i])[0];
-          artist = $(node.getElementsByClassName('col1'))[0] &&
-            $(node.getElementsByClassName('col1'))[0].getElementsByClassName('link_item')[0] &&
-            $(node.getElementsByClassName('col1'))[0].getElementsByClassName('link_item')[0].innerText.trim();
-          location = $(node.getElementsByClassName('col3'))[0] &&
-            $(node.getElementsByClassName('col3'))[0].getElementsByClassName('location')[0] &&
-            $(node.getElementsByClassName('col3'))[0].getElementsByClassName('location')[0].innerText.trim() || 'TBA';
-          time = $(node.getElementsByClassName('col4'))[0] &&
-            $(node.getElementsByClassName('col4'))[0].getElementsByClassName('date_time')[0] &&
-            $(node.getElementsByClassName('col4'))[0].getElementsByClassName('date_time')[0].innerText.trim() || 'TBA';
-          if (!artist) continue;
-          that.shows[Showlists.OFFICIAL][day].push({
-            artist: artist,
-            location: location,
-            time: time
-          });
-        }
-        $('#' + div_id).remove();
-        fn();
       });
     },
 
@@ -214,7 +196,7 @@
                   });
                   that.playlists = that.playlists.concat(playlists);
                   if (response.next) {
-                    loadPlaylists(response.next);
+                    loadPlaylists(response.next, callback);
                   } else {
                     callback();
                   }
@@ -291,18 +273,18 @@
           show_source = $('#show-source').val(),
           show_day = $('#show-day').val();
       $('#loading-img').show();
-      $("#filter-shows").prop("disabled",true);
+      $("#filter-shows").prop("disabled", true);
       if (show_source === 'official') {
         that.loadDayOfficial(show_day, function(){
           that.renderOfficialShows(show_day);
           $('#loading-img').hide();
-          $("#filter-shows").prop("disabled",false);
+          $("#filter-shows").prop("disabled", false);
         });
       } else {
         that.loadDayUnofficial(show_day, function(){
           that.renderUnofficialShows(show_day);
           $('#loading-img').hide();
-          $("#filter-shows").prop("disabled",false);
+          $("#filter-shows").prop("disabled", false);
         });
       }
     },
@@ -363,6 +345,6 @@
 
   };
 
-  new Showlist(2015, 17);
+  new Showlist();
 
-})(document, Handlebars, jQuery, _);
+})(document, Handlebars, jQuery);
