@@ -5,9 +5,10 @@ Use your Spotify playlists to find official and unofficial shows at SXSW. This w
 # Installation and Setup
 
 1. [Register a new Spotify application](https://developer.spotify.com/my-applications/)
-2. Using settings/credentials.example.json as a template, store your newly-created client ID, client secret, and redirect URI in settings/credentials.json.
+2. Using .env.example as a template, store your newly-created client ID, client secret, and redirect URI in /.env.
 3. Run `npm install` to install node dependencies
-4. Start the node server via `node app.js`
+4. Install Foreman
+4. Start the node server via `foreman start`
 
 # Yearly Maintenance
 
@@ -17,4 +18,4 @@ Every year, the SXSW_YEAR (current year) and SXSW_START_DAY (integer date in Mar
 
 1. Cache results from scrapers
 2. Layout/css
-3. Credentials for production environment
+3. Print styles

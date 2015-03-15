@@ -9,8 +9,7 @@ var _ = require('underscore'),
     querystring = require('querystring'),
     cookieParser = require('cookie-parser'),
     scraper = require('./lib/scraper')
-    CONFIG = require('./settings/config.json'),
-    CREDENTIALS = require('./settings/credentials.json');
+    CONFIG = require('./config.json');
 
 /**
  * Generates a random string containing numbers and letters
@@ -39,9 +38,9 @@ app.get('/login', function(req, res) {
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
-      client_id: CREDENTIALS.CLIENT_ID,
+      client_id: process.env.CLIENT_ID,
       scope: scope,
-      redirect_uri: CREDENTIALS.REDIRECT_URI,
+      redirect_uri: process.env.REDIRECT_URI,
       state: state
     }));
 });
@@ -61,11 +60,11 @@ app.get('/callback', function(req, res) {
       url: 'https://accounts.spotify.com/api/token',
       form: {
         code: code,
-        redirect_uri: CREDENTIALS.REDIRECT_URI,
+        redirect_uri: process.env.REDIRECT_URI,
         grant_type: 'authorization_code'
       },
       headers: {
-        'Authorization': 'Basic ' + (new Buffer(CREDENTIALS.CLIENT_ID + ':' + CREDENTIALS.CLIENT_SECRET).toString('base64'))
+        'Authorization': 'Basic ' + (new Buffer(process.env.CLIENT_ID + ':' + process.env.CLIENT_SECRET).toString('base64'))
       },
       json: true
     };
@@ -97,7 +96,7 @@ app.get('/refresh_token', function(req, res) {
   var refreshToken = req.query.refresh_token,
       authOptions = {
         url: 'https://accounts.spotify.com/api/token',
-        headers: { 'Authorization': 'Basic ' + (new Buffer(CREDENTIALS.CLIENT_ID + ':' + CREDENTIALS.CLIENT_SECRET).toString('base64')) },
+        headers: { 'Authorization': 'Basic ' + (new Buffer(process.env.CLIENT_ID + ':' + process.env.CLIENT_SECRET).toString('base64')) },
         form: {
           grant_type: 'refresh_token',
           refresh_token: refreshToken

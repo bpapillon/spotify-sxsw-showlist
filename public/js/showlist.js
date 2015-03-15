@@ -219,7 +219,7 @@
       $('#shows').html('');
       $.each(this.filterOfficialShows(day), function(artist_name, artist_shows){
         var output_str = "<p><a href='" + that.sxswSearchUrl(artist_name) +
-          "'>" + artist_name + "</a><br />" +
+          "' target='_blank'>" + artist_name + "</a><br />" +
           artist_shows.map(timeLocationHelper).join("<br />") + "</p><br />";
         $('#shows').append(output_str);
       });
