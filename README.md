@@ -1,6 +1,6 @@
 # Spotify SXSW Showlist
 
-Use your Spotify playlists to find official and unofficial shows at SXSW. Updated for 2015.
+Use your Spotify playlists to find official and unofficial shows at SXSW. This web app is adapted from the [desktop version](https://github.com/billboebel/spotify-showlist), the API for which has been deprecated by Spotify. Updated for 2015.
 
 # Installation and Setup
 
@@ -16,5 +16,5 @@ Every year, the SXSW_YEAR (current year) and SXSW_START_DAY (integer date in Mar
 # Todo
 
 1. Cache results from scrapers
-2. Implement the unofficial scraper (it's already written for the front-end, but needs to be ported over to the node side)
-3. Layout/css
+2. Layout/css
+3. Credentials for production environment
