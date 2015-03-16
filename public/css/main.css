@@ -60,5 +60,11 @@ img#avatar {
 }
 
 .highlight {
-    background-color: #FFFBCC;
+    background-color: #F3F315;
+}
+
+@media print {
+    #login, #user-playlists, #loading-img, #artists {
+        display: none !important;
+    }
 }
