@@ -30,9 +30,6 @@
       document.getElementById('filter-shows').addEventListener('click', function(){
         that.loadAndRenderShows();
       }, false);
-      // document.getElementById('obtain-new-token').addEventListener('click', function(){
-      //   that.refreshToken();
-      // }, false);
       document.getElementById('clear-selections').addEventListener('click', function(){
         that.clearSelections();
       }, false);
@@ -44,31 +41,6 @@
       this.selected_playlists = [];
       this.renderArtists();
       this.renderPlaylists();
-    },
-
-    collectArtists: function(url, callback) {
-      var that = this;
-      typeof callback !== 'function' && (callback = noop);
-      $.ajax({
-        url: url,
-        headers: {
-          'Authorization': 'Bearer ' + that.access_token
-        },
-        success: function(response) {
-          var artists, i, j, k, l,
-              tracks = response.tracks.items;
-          for (i = 0, j = tracks.length; i < j; i++){
-            artists = tracks[i].track.artists;
-            for (k = 0, l = artists.length; k < l; k++) {
-              if (that.artist_ids.indexOf(artists[k].id) === -1) {
-                that.artists.push(artists[k]);
-                that.artist_ids.push(artists[k].id);
-              }
-            }
-          }
-          callback();
-        }
-      });
     },
 
     filterOfficialShows: function(day) {
@@ -126,6 +98,39 @@
         $('#loading-img').hide();
         $("#filter-shows").prop("disabled", false);
       });
+    },
+
+    loadArtists: function(url, fn) {
+      var that = this,
+          loadArtists = function(url, fn){
+            $.ajax({
+              url: url,
+              headers: {
+                'Authorization': 'Bearer ' + that.access_token
+              },
+              success: function(response) {
+                var artists, i, j, k, l,
+                    next_url = (response.tracks && response.tracks.next) || response.next || null,
+                    tracks = (response.tracks && response.tracks.items) || response.items || [];
+                for (i = 0, j = tracks.length; i < j; i++){
+                  artists = tracks[i].track.artists;
+                  for (k = 0, l = artists.length; k < l; k++) {
+                    if (that.artist_ids.indexOf(artists[k].id) === -1) {
+                      that.artists.push(artists[k]);
+                      that.artist_ids.push(artists[k].id);
+                    }
+                  }
+                }
+                if (next_url) {
+                  loadArtists(next_url, fn);
+                } else {
+                  fn();
+                }
+              }
+            });
+          };
+      typeof fn !== 'function' && (fn = noop);
+      loadArtists(url, fn);
     },
 
     loadPlaylists: function(){
@@ -188,19 +193,6 @@
       });
     },
 
-    // refreshToken: function(callback){
-    //   typeof callback !== 'function' && (callback = noop);
-    //   $.ajax({
-    //     url: '/refresh_token',
-    //     data: {
-    //       'refresh_token': this.refresh_token
-    //     }
-    //   }).done(function(data) {
-    //     this.access_token = data.access_token;
-    //     callback(data);
-    //   });
-    // },
-
     renderArtists: function(){
       var that = this;
       var templateSource = document.getElementById('artists-template').innerHTML,
@@ -239,11 +231,18 @@
       });
       $('#user-playlists').show();
       $('#user-playlists .playlist').click(function(ev){
-        var url = $(this).data('url'),
-            playlist_id = $(this).data('id');
-        that.collectArtists(url, function(){
+        var $this = $(this),
+            url = $this && $this.data('url'),
+            playlist_id = $this && $this.data('id'),
+            $thumbnail = $this && $this.find('.thumbnail');
+        if (that.selected_playlists.indexOf(playlist_id) > -1) {
+          console.log('playlist already selected');
+          return;
+        }
+        that.selected_playlists.push(playlist_id);
+        $thumbnail.addClass('selected');
+        that.loadArtists(url, function(){
           that.renderArtists();
-          that.selected_playlists.push(playlist_id);
           that.renderPlaylists();
         });
       });
