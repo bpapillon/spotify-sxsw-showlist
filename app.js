@@ -117,14 +117,7 @@ app.get('/shows/*/*', function(req, res) {
   var urlParts = _.compact(req.url.split('/')),
       source = urlParts[1],
       day = urlParts[2];
-  if (typeof scraper[source] !== 'function') {
-    return res.send({
-      'success': false,
-      'error': 'Invaid show source: ' + source,
-      'shows': []
-    });
-  }
-  scraper[source](day, res);
+  scraper.get(source, day, res);
 });
 
 console.log('Listening on ' + process.env.PORT);
