@@ -17,6 +17,6 @@ Every year, the SXSW_YEAR (current year) and SXSW_START_DAY (integer date in Mar
 
 # Todo
 
-1. Store results in cache
-2. Print styles
+1. Print styles
+2. Matched artist notes are supposed to be highlighted in unofficial show results; this is broken right now
 3. General UI/styles
