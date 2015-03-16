@@ -269,7 +269,7 @@
           $('#shows').append('<br />' + show);
         }
       });
-      $('#shows').highlight(artist_names, { wordsOnly: true });
+      $('#shows').highlight(artist_names, {wordsOnly: true});
     },
 
     run: function(){
