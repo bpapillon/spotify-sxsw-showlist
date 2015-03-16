@@ -14,9 +14,3 @@ Use your Spotify playlists to find official and unofficial shows at SXSW. This w
 # Yearly Maintenance
 
 Every year, the SXSW_YEAR (current year) and SXSW_START_DAY (integer date in March of the first day, Tuesday, of SXSW) will need to be updated. Any changes to the designs of schedule.sxsw.com or showlistaustin.com would also necessitate changes to the scraper code that pulls show data from those sites.
-
-# Todo
-
-1. Print styles
-2. Matched artist notes are supposed to be highlighted in unofficial show results; this is broken right now
-3. General UI/styles
