@@ -2,3 +2,4 @@
 /settings/credentials.json
 /node_modules
 /.env
+dump.rdb

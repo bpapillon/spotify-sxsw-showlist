@@ -8,7 +8,8 @@ Use your Spotify playlists to find official and unofficial shows at SXSW. This w
 2. Using .env.example as a template, store your newly-created client ID, client secret, and redirect URI in /.env.
 3. Run `npm install` to install node dependencies
 4. Install Foreman
-4. Start the node server via `foreman start`
+5. If you are using the redis cache, start `redis-server`; you can disable caching by setting 'USE_CACHE' to false in config.json, in which case you do not need to run a redis server.
+6. Start the node server via `foreman start`
 
 # Yearly Maintenance
 

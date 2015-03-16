@@ -1,5 +1,7 @@
 {
+    "CACHE_TTL_SECONDS": 3600,
     "SXSW_DAYS": ["tuesday", "wednesday", "thursday", "friday", "saturday"],
     "SXSW_YEAR": 2015,
-    "SXSW_START_DAY": 17
+    "SXSW_START_DAY": 17,
+    "USE_CACHE": true
 }
