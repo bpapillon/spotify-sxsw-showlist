@@ -8,7 +8,7 @@ var _ = require('underscore'),
     request = require('request'),
     querystring = require('querystring'),
     cookieParser = require('cookie-parser'),
-    scraper = require('./lib/scraper')
+    scraper = require('./lib/scraper'),
     CONFIG = require('./config.json');
 
 /**
