@@ -234,9 +234,11 @@
         var $this = $(this),
             url = $this && $this.data('url'),
             playlist_id = $this && $this.data('id'),
-            $thumbnail = $this && $this.find('.thumbnail');
-        if (that.selected_playlists.indexOf(playlist_id) > -1) {
-          console.log('playlist already selected');
+            $thumbnail = $this && $this.find('.thumbnail'),
+            existing = that.selected_playlists.indexOf(playlist_id);
+        if (existing > -1) {
+          that.selected_playlists.splice(existing, 1);
+          $thumbnail.removeClass('selected');
           return;
         }
         that.selected_playlists.push(playlist_id);
